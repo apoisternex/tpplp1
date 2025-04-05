@@ -59,7 +59,7 @@ recrDoc fTexto fLinea z d = case d of
 
 indentar :: Int -> Doc -> Doc
 indentar i (Linea n ds) = Linea n (foldDoc Texto (\ n rec -> Linea (n + i) rec) Vacio ds)
--- indentar i = foldDoc Texto (\ n rec -> Linea (n + i) rec) Vacio
+indentar i d = foldDoc Texto (\ n rec -> Linea (n + i) rec) Vacio d
 
 mostrar :: Doc -> String
 mostrar = error "PENDIENTE: Ejercicio 4"

@@ -44,7 +44,7 @@ infixr 6 <+>
 (<+>) = flip (foldDoc Texto Linea ) 
 
 indentar :: Int -> Doc -> Doc
-indentar i = error "PENDIENTE: Ejercicio 3"
+indentar i (Linea n ds) = Linea n (foldDoc Texto (\ n rec -> Linea (n + i) rec) Vacio ds)
 
 mostrar :: Doc -> String
 mostrar = error "PENDIENTE: Ejercicio 4"

@@ -12,6 +12,7 @@ module Documento
 where
 import Control.Arrow (ArrowZero(zeroArrow))
 import Text.Read.Lex (Lexeme(String))
+import Debug.Trace (trace)
 
 data Doc
   = Vacio
@@ -40,11 +41,25 @@ foldDoc fTexto fLinea z d = case d of
 -- También permite que expresiones como `texto "a" <+> linea <+> texto "c"` sean válidas sin la necesidad de usar paréntesis.
 infixr 6 <+>
 
-(<+>) :: Doc -> Doc -> Doc 
-(<+>) = flip (foldDoc Texto Linea ) 
+recrDoc :: ( String -> a -> Doc -> a ) -> ( Int -> a -> Doc -> a ) -> a -> Doc -> a
+recrDoc fTexto fLinea z d = case d of
+    Texto s ds -> fTexto s (recrDoc fTexto fLinea z ds) ds
+    Linea n ds -> fLinea n (recrDoc fTexto fLinea z ds) ds
+    Vacio -> z
+
+(<+>) :: Doc -> Doc -> Doc
+(<+>) d1 d2 = recrDoc (\s1 rec ds1-> 
+                          case (ds1, d2) of
+                            (Vacio, Texto s2 ds2) -> (Texto (s1 ++ s2) ds2)
+                            _ -> (Texto s1 rec)
+                       ) (\n rec ds -> Linea n rec) d2 d1
+
+-- concatDoc :: Doc -> Doc -> Doc 
+-- concatDoc d1 d2 = foldDoc (Texto) Linea d2 d1
 
 indentar :: Int -> Doc -> Doc
 indentar i (Linea n ds) = Linea n (foldDoc Texto (\ n rec -> Linea (n + i) rec) Vacio ds)
+-- indentar i = foldDoc Texto (\ n rec -> Linea (n + i) rec) Vacio
 
 mostrar :: Doc -> String
 mostrar = error "PENDIENTE: Ejercicio 4"

@@ -62,7 +62,7 @@ indentar i (Linea n ds) = Linea n (foldDoc Texto (\ n rec -> Linea (n + i) rec) 
 indentar i d = foldDoc Texto (\ n rec -> Linea (n + i) rec) Vacio d
 
 mostrar :: Doc -> String
-mostrar = error "PENDIENTE: Ejercicio 4"
+mostrar = foldDoc (++) ((.) (++) (\i -> "\n"++ replicate i ' ')) ""
 
 -- | Función dada que imprime un documento en pantalla
 

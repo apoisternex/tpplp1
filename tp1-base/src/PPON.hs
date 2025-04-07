@@ -16,8 +16,7 @@ pponAtomico p = case p of
 
 pponObjetoSimple :: PPON -> Bool
 pponObjetoSimple (ObjetoPP lista) = foldr ((.) (&&) ((.) pponAtomico snd)) True lista
--- >>> pponObjetoSimple (ObjetoPP [("nombre",(TextoPP "niga")),("edad",(IntPP 22))])
--- True
+
 intercalar :: Doc -> [Doc] -> Doc
 intercalar = error "PENDIENTE: Ejercicio 7"
 

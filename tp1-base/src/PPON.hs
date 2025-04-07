@@ -1,6 +1,7 @@
 module PPON where
 
 import Documento
+import GHC.Exts.Heap.Utils (dataConNames)
 
 data PPON
   = TextoPP String
@@ -9,11 +10,14 @@ data PPON
   deriving (Eq, Show)
 
 pponAtomico :: PPON -> Bool
-pponAtomico = error "PENDIENTE: Ejercicio 5"
+pponAtomico p = case p of
+  ObjetoPP datos -> False
+  _ -> True
 
 pponObjetoSimple :: PPON -> Bool
-pponObjetoSimple = error "PENDIENTE: Ejercicio 6"
-
+pponObjetoSimple (ObjetoPP lista) = foldr ((.) (&&) ((.) pponAtomico snd)) True lista
+-- >>> pponObjetoSimple (ObjetoPP [("nombre",(TextoPP "niga")),("edad",(IntPP 22))])
+-- True
 intercalar :: Doc -> [Doc] -> Doc
 intercalar = error "PENDIENTE: Ejercicio 7"
 

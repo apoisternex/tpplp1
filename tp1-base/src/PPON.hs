@@ -18,7 +18,7 @@ pponObjetoSimple :: PPON -> Bool
 pponObjetoSimple (ObjetoPP lista) = foldr ((.) (&&) ((.) pponAtomico snd)) True lista
 
 intercalar :: Doc -> [Doc] -> Doc
-intercalar = error "PENDIENTE: Ejercicio 7"
+intercalar separador = foldr ((.) (<+>) (<+> separador)) vacio
 
 entreLlaves :: [Doc] -> Doc
 entreLlaves [] = texto "{ }"

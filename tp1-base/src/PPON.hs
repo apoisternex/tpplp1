@@ -33,7 +33,12 @@ entreLlaves ds =
     <+> texto "}"
 
 aplanar :: Doc -> Doc
-aplanar dc = texto (foldDoc (\ s recu -> s ++ " " ++ recu) (\ _ recu -> recu) "" dc)
+aplanar = foldDoc (\ tex recu -> texto tex <+> recu) (\ _ recu -> texto " " <+> recu) vacio
 
 pponADoc :: PPON -> Doc
-pponADoc = error "PENDIENTE: Ejercicio 9"
+pponADoc p = case p of
+    TextoPP st  -> texto (show st)
+    IntPP i     -> texto (show i)
+    ObjetoPP q  -> if pponObjetoSimple p
+      then aplanar ( entreLlaves (foldr (\ (s, pom) recu -> (texto (show s ++ ": ") <+> pponADoc pom) : recu) [] q) )
+      else entreLlaves ( foldr (\ (s, pom) recu -> (texto (show s ++ ": ") <+> pponADoc pom) : recu) [] q )

@@ -19,7 +19,16 @@ data Doc
   | Texto String Doc
   | Linea Int Doc
   deriving (Eq, Show)
-
+{-
+  Invariante
+    Sea Texto s d entonces:
+      s no debe ser el string vacío.
+      s no debe contener saltos de línea
+      d debe ser Vacio o Linea i d’
+      
+    Sea Linea i d entonces:
+      i >= 0
+-}
 vacio :: Doc
 vacio = Vacio
 

@@ -1,13 +1,12 @@
 module PPON where
-
 import Documento
-import GHC.Exts.Heap.Utils (dataConNames)
 
 data PPON
   = TextoPP String
   | IntPP Int
   | ObjetoPP [(String, PPON)]
   deriving (Eq, Show)
+
 
 pponAtomico :: PPON -> Bool
 pponAtomico p = case p of
@@ -18,7 +17,8 @@ pponObjetoSimple :: PPON -> Bool
 pponObjetoSimple (ObjetoPP lista) = foldr (\x acc -> (pponAtomico . snd) x && acc) True lista
 
 intercalar :: Doc -> [Doc] -> Doc
-intercalar doc = foldr1 (\ x acc -> x <+> doc <+> acc)
+intercalar doc []     = vacio
+intercalar doc lista = foldr1 (\ x acc -> x <+> doc <+> acc) lista
 
 entreLlaves :: [Doc] -> Doc
 entreLlaves [] = texto "{ }"

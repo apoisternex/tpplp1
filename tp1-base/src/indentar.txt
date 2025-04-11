@@ -23,8 +23,8 @@ data Doc
 Según el principio de inducción de estructuras debemos probar cada caso base y cada caso recursivo a través de la inducción.
 Es decir, si se prueba que:
 1. P(Vacio)
-2. P(Texto String Doc)
-3. P(Linea Int Doc)
+2. Para todo d :: Doc.(P(d) -> P(Texto String d))
+3. Para todo d :: Doc.(P(d) -> P(Linea Int d))
 Entonces, Para todo x :: Doc.P(x)
 
 1. Caso base:
@@ -47,9 +47,27 @@ Equiv(Fdoc0) Vacio
 Tal y como se queria probar.
 
 Una vez visto el caso base, ahora hay que ver los dos casos recursivos.
-2. Primer caso inductivo.
-La hipotesis inductiva es: Para todo n, m :: Int positivos. P(Texto String Doc) 
-Equiv indentar n (indentar m (Texto String Doc)) = indentar (n+m) (Texto String Doc)
+2. Primer caso inductivo sobre d :: doc.
+Queremos probar que: Para todo st :: String. Para todo d :: Doc.(P(d) -> P(Texto st d))
+Es decir
+Para todo n, m :: Int positivos.(indentar n (indentar m d) = indentar (n+m) d) -> (indentar n (indentar m (Texto st d)) = indentar (n+m) (Texto st d))
 
-La tesis inductiva es Para todo n, m :: Int positivos. P(Texto String Doc) 
+HI Equiv indentar n (indentar m d) = indentar (n+m) d
+Nuestra tesis inductiva sera pues indentar n (indentar m (Texto st d)) = indentar (n+m) (Texto st d)
+Vamos por la izquierda:
+
+             indentar n (indentar m (Texto st d))
+Equiv(idt)   indentar n (foldDoc Texto (\ n' rec -> Linea (n' + m) rec) Vacio (Texto st d))
+Equiv(Fdoc1) indentar n ( Texto st (foldDoc Texto (\ n' rec -> Linea (n' + m) rec) Vacio d) )
+Equiv(idt)   indentar n ( Texto st (indentar m d) )
+Equiv(idt)   foldDoc Texto (\ n' rec -> Linea (n' + n) rec) Vacio (Texto st (indentar m d))
+Equiv(Fdoc1) Texto st (foldDoc Texto (\ n' rec -> Linea (n' + m) rec) Vacio (indentar m d)) 
+Equiv(idt)   Texto st ( indentar n (indentar m d) )
+Equiv(HI)    Texto st (indentar (n+m) d)
+Equiv(idt)   Texto st (foldDoc Texto (\ n' rec -> Linea (n' + (n+m)) rec) Vacio d) 
+Equiv(Fdoc1) foldDoc Texto (\ n' rec -> Linea (n' + (n+m)) rec) Vacio (Texto st d)
+Equiv(idt)   indentar (n+m) (Texto st d) 
+justo como queriamos probar. Cuchau
+
+
 

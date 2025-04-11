@@ -24,7 +24,11 @@ testsEj2 =
   test
     [ vacio <+> vacio ~?= vacio,
       texto "a" <+> texto "b" ~?= texto "ab",
-      (texto "a" <+> linea) <+> texto "b" ~?= texto "a" <+> (linea <+> texto "b")
+      (linea <+> texto "a") <+> texto "b" ~?= linea <+> texto "ab", --concatenar primero una linea
+      vacio <+> texto "a" ~?= texto "a", --concatenar a vacio
+      texto "a" <+> vacio ~?= texto "a", --concatenar un vacio a otro no vacio
+      vacio <+> linea ~?= linea, --concatenar a vacio pero con linea
+      linea <+> vacio ~?= linea   -- al revés
     ]
 
 testsEj3 :: Test

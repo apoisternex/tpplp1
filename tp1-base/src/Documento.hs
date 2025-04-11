@@ -67,9 +67,9 @@ recrDoc fTexto fLinea z d = case d of
         (\s1 rec ds1 -> case (ds1, d2) of
             {-
                 Texto (s1 ++ s2) ds2 cumple los invariantes porque: 
-                (1) s1 y s2 no son vacíos, por lo tanto, s1 ++ s2 no puede serlo. 
-                (2) No añadimos ningún carácter que no estuviese ya en s1 y s2, entonces no puede haber saltos de línea en s1 ++ s2.
-                (3) d2 cumple el invariante, de modo que ds2 debe ser Vacio o Linea i d’.
+                (1) s1 y s2 no son vacíos por precondición, por lo tanto, s1 ++ s2 no puede serlo. 
+                (2) No añadimos ningún carácter que no estuviese ya en s1 y s2, por lo que no puede haber saltos de línea en s1 ++ s2.
+                (3) d2 cumple el invariante por precondición, de modo que ds2 debe ser Vacio o Linea i d’.
             -}
             (Vacio, Texto s2 ds2) -> Texto (s1 ++ s2) ds2 
 
@@ -80,16 +80,17 @@ recrDoc fTexto fLinea z d = case d of
                 (3) rec no es 'Texto _ _' ya que el 'ds' utilizado para producirlo no lo es y fLinea devuelve 'Linea _ _'. 
             -}
             _ -> Texto s1 rec
-            -- Linea n rec cumple el invariante porque n >= 0. 
+            -- Linea n rec cumple el invariante porque n >= 0 por precondición. 
         ) 
         (\n rec ds -> Linea n rec) 
         d2 
         d1
 {-
   Indentar únicamente modifica a todos los constructores 'Linea n _' aumentándoles n.
-  Por lo tanto, si n era mayor a 0, n + i debe serlo ya que i es positivo.
-  No puede suceder que indentar devuelva un valor que contenga 'Texto _ (Texto _ _) _',
-  ya que la función nunca convierte 'Vacio' o 'Linea _ _' en 'Texto _ _'.
+  Por precondición n >= 0, por lo que n + i debe serlo también ya que i es positivo por invariante en entrada.
+  No puede suceder que indentar devuelva un valor que contenga 'Texto _ (Texto _ _) _', ya que 
+  la función nunca convierte 'Vacio' o 'Linea _ _' en 'Texto _ _'.
+  Por último, tampoco se modifica el String de cualquier Doc Texto.
 -}
 indentar :: Int -> Doc -> Doc
 indentar i = foldDoc Texto (\ n rec -> Linea (n + i) rec) Vacio 

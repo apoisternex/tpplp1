@@ -1,0 +1,55 @@
+Se pide demostrar que:
+Para todo n, m :: Int positivos. Para todo x :: Doc. indentar n (indentar m x) = indentar (n+m) x
+
+considerando:
+      indentar :: Int -> Doc -> Doc
+{idt} indentar i = foldDoc Texto (\ n' rec -> Linea (n' + i) rec) Vacio 
+
+      foldDoc :: (String -> a -> a) -> (Int -> a -> a) -> a -> Doc -> a
+      foldDoc fTexto fLinea base docu = case docu of
+{Fdoc0}  Vacio -> base
+{Fdoc1}  Texto s ds -> fTexto s (foldDoc fTexto fLinea base ds)
+{Fdoc2}  Linea n'' ds -> fLinea n'' (foldDoc fTexto fLinea base ds)
+
+Reescribimos un poco las apariciones de n con ' para no confundir con el n de la demostración.
+
+Con el tipo de dato:
+data Doc
+  = Vacio
+  | Texto String Doc
+  | Linea Int Doc
+  deriving (Eq, Show)
+
+Según el principio de inducción de estructuras debemos probar cada caso base y cada caso recursivo a través de la inducción.
+Es decir, si se prueba que:
+1. P(Vacio)
+2. P(Texto String Doc)
+3. P(Linea Int Doc)
+Entonces, Para todo x :: Doc.P(x)
+
+1. Caso base:
+Para todo n, m :: Int positivos.P(Vacio)
+P(Vacio) Equiv indentar n (indentar m Vacio) = indentar (n+m) Vacio
+
+Veamos por el principio de reemplazo.
+Lado izquierdo:
+indentar n (indentar m Vacio) 
+Equiv(idt)   indentar( n foldDoc Texto (\ n' rec -> Linea (n' + m) rec) Vacio Vacio )
+Equiv(Fdoc0) indentar n Vacio 
+Equiv(idt)   foldDoc Texto (\ n' rec -> Linea (n' + n) rec) Vacio Vacio
+Equiv(Fdoc0) Vacio 
+
+Otra vez el principio de reemplazo
+Lado derecho:
+indentar (n+m) Vacio
+Equiv(idt) foldDoc Texto (\ n' rec -> Linea (n' + (n+m)) rec) Vacio Vacio
+Equiv(Fdoc0) Vacio 
+Tal y como se queria probar.
+
+Una vez visto el caso base, ahora hay que ver los dos casos recursivos.
+2. Primer caso inductivo.
+La hipotesis inductiva es: Para todo n, m :: Int positivos. P(Texto String Doc) 
+Equiv indentar n (indentar m (Texto String Doc)) = indentar (n+m) (Texto String Doc)
+
+La tesis inductiva es Para todo n, m :: Int positivos. P(Texto String Doc) 
+

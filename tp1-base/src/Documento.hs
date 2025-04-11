@@ -50,21 +50,47 @@ foldDoc fTexto fLinea base docu = case docu of
 -- También permite que expresiones como `texto "a" <+> linea <+> texto "c"` sean válidas sin la necesidad de usar paréntesis.
 infixr 6 <+>
 
-recrDoc :: ( String -> a -> Doc -> a ) -> ( Int -> a -> Doc -> a ) -> a -> Doc -> a
+recrDoc :: (String -> a -> Doc -> a) -> (Int -> a -> Doc -> a) -> a -> Doc -> a
 recrDoc fTexto fLinea z d = case d of
-    Texto s ds -> fTexto s (recrDoc fTexto fLinea z ds) ds
-    Linea n ds -> fLinea n (recrDoc fTexto fLinea z ds) ds
-    Vacio -> z
+    Texto s ds -> fTexto s (recrDoc fTexto fLinea z ds) ds 
+    Linea n ds -> fLinea n (recrDoc fTexto fLinea z ds) ds 
+    Vacio      -> z
+
+{-
+    'd1 <+> d1' es igual a 'fTexto s rec ds', 'fLinea n rec ds' o d2. 
+    Basta entonces con demostrar que cada uno de estos tres posibles valores cumple con los invariantes.
+-}
 
 (<+>) :: Doc -> Doc -> Doc
-(<+>) d1 d2 = recrDoc (\s1 rec ds1-> case (ds1, d2) of
-                             (Vacio, Texto s2 ds2) -> Texto (s1 ++ s2) ds2
-                             _                     -> Texto s1 rec
-                      ) (\n rec ds -> Linea n rec) d2 d1
+(<+>) d1 d2 = 
+    recrDoc 
+        (\s1 rec ds1 -> case (ds1, d2) of
+            {-
+                Texto (s1 ++ s2) ds2 cumple los invariantes porque: 
+                (1) s1 y s2 no son vacíos, por lo tanto, s1 ++ s2 no puede serlo. 
+                (2) No añadimos ningún carácter que no estuviese ya en s1 y s2, entonces no puede haber saltos de línea en s1 ++ s2.
+                (3) d2 cumple el invariante, de modo que ds2 debe ser Vacio o Linea i d’.
+            -}
+            (Vacio, Texto s2 ds2) -> Texto (s1 ++ s2) ds2 
 
--- concatDoc :: Doc -> Doc -> Doc 
--- concatDoc d1 d2 = foldDoc (Texto) Linea d2 d1
-
+            {-
+                Texto s1 rec cumple los invariantes porque: 
+                (1) s1 no es vacío. 
+                (2) s1 no contiene saltos de línea 
+                (3) rec no es 'Texto _ _' ya que el 'ds' utilizado para producirlo no lo es y fLinea devuelve 'Linea _ _'. 
+            -}
+            _ -> Texto s1 rec
+            -- Linea n rec cumple el invariante porque n >= 0. 
+        ) 
+        (\n rec ds -> Linea n rec) 
+        d2 
+        d1
+{-
+  Indentar únicamente modifica a todos los constructores 'Linea n _' aumentándoles n.
+  Por lo tanto, si n era mayor a 0, n + i debe serlo ya que i es positivo.
+  No puede suceder que indentar devuelva un valor que contenga 'Texto _ (Texto _ _) _',
+  ya que la función nunca convierte 'Vacio' o 'Linea _ _' en 'Texto _ _'.
+-}
 indentar :: Int -> Doc -> Doc
 indentar i = foldDoc Texto (\ n rec -> Linea (n + i) rec) Vacio 
 

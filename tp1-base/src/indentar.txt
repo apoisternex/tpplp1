@@ -73,7 +73,6 @@ Equiv(HI)    Texto st (indentar (n+m) d)
 Equiv(idt)   Texto st (foldDoc Texto (\ n' rec -> Linea (n' + (n+m)) rec) Vacio d) 
 Equiv(Fdoc1) foldDoc Texto (\ n' rec -> Linea (n' + (n+m)) rec) Vacio (Texto st d)
 Equiv(idt)   indentar (n+m) (Texto st d) 
-justo como queriamos probar. Cuchau
 
 3. Ahora nos queda ver el último caso inductivo sobre d :: doc.
 Queremos probar que: Para todo num :: Int. Para todo d :: Doc.(P(d) -> P(Linea num d))
@@ -95,8 +94,8 @@ Equiv(Beta)  Linea (num + m + n) (foldDoc Texto (\ n' rec -> Linea (n' + n) rec)
 Equiv(idt)   Linea (num + m + n) ( indentar n (indentar m d) )
 Equiv(HI)    Linea (num + m + n) (indentar (n+m) d)
 Equiv(idt)   Linea (num + m + n) (foldDoc Texto (\ n' rec -> Linea (n' + (n+m)) rec) Vacio d) 
-
-Equiv(Fdoc2) foldDoc Texto (\ n' rec -> Linea (n' + (n+m)) rec) Vacio (Linea (num + m + n) d)
-Equiv(idt)   indentar (n+m) (Linea (num + m + n) d) 
-
-Eeh... queda distinto. HELP!
+Equiv(conmutacion y distribucion de la suma) Linea (num + (n+m)) (foldDoc Texto (\ n' rec -> Linea (n' + (n+m)) rec) Vacio d)
+Equiv(Beta)  (\ n' rec -> Linea (n' + (n+m)) rec) num (foldDoc Texto (\ n' rec -> Linea (n' + (n+m)) rec) Vacio d)
+Equiv(Fdoc2) foldDoc Texto (\ n' rec -> Linea (n' + (n+m)) rec) Vacio (Linea num d)
+Equiv(idt)   indentar (n+m) (Linea num d) 
+Que es a lo que queríamos llegar

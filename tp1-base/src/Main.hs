@@ -28,7 +28,12 @@ testsEj2 =
       --Tests hechos por nosotros
       (texto "a" <+> texto "b") <+> linea ~?= texto "a" <+> (texto "b" <+> linea),
       (texto "a" <+> texto "b") <+> texto "c" ~?= texto "a" <+> texto "b" <+> texto "c",
-      texto "a" <+> texto "b" ~?= (<+>) (texto "a") (texto "b")
+      texto "a" <+> texto "b" ~?= (<+>) (texto "a") (texto "b"),
+      (linea <+> texto "a") <+> texto "b" ~?= linea <+> texto "ab", --concatenar primero una linea
+      vacio <+> texto "a" ~?= texto "a", --concatenar a vacio
+      texto "a" <+> vacio ~?= texto "a", --concatenar un vacio a otro no vacio
+      vacio <+> linea ~?= linea, --concatenar a vacio pero con linea
+      linea <+> vacio ~?= linea   -- al revés
     ]
 
 testsEj3 :: Test

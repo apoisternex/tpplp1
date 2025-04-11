@@ -1,7 +1,6 @@
 Se pide demostrar que:
 Para todo n, m :: Int positivos. Para todo x :: Doc. indentar n (indentar m x) = indentar (n+m) x
-Siendo Para todo d :: doc. Para todo n, m :: Int positivos. P(d) Equivale a indentar n (indentar m d) = indentar (n+m) d
-
+Siendo Para todo d :: doc. Para todo n, m :: Int positivos. P(d) Equivalente a indentar n (indentar m d) = indentar (n+m) d
 
 considerando:
       indentar :: Int -> Doc -> Doc
@@ -48,7 +47,7 @@ Lado derecho:
 indentar (n+m) Vacio
 Equiv(idt) foldDoc Texto (\ n' rec -> Linea (n' + (n+m)) rec) Vacio Vacio
 Equiv(Fdoc0) Vacio 
-Tal y como se queria probar.
+Tal y como se quería probar.
 
 Una vez visto el caso base, ahora hay que ver los dos casos recursivos. 
 Hay dos casos inductivos porque el siguiente documento a calquier documento d y un String st puede ser tanto Texto st d o bien Linea st d.
@@ -101,5 +100,7 @@ Equiv(Beta)  (\ n' rec -> Linea (n' + (n+m)) rec) num (foldDoc Texto (\ n' rec -
 Equiv(Fdoc2) foldDoc Texto (\ n' rec -> Linea (n' + (n+m)) rec) Vacio (Linea num d)
 Equiv(idt)   indentar (n+m) (Linea num d) 
 Que es a lo que queríamos llegar
-Habiendo probado los 3 puntos de indicción de estructuras sobre el tipo Doc,
-Para todo n, m :: Int positivos. Para todo x :: Doc. indentar n (indentar m x) = indentar (n+m) xentonces queda demostrado que, Para todo x :: Doc. P(x)
+
+Habiendo probado los 3 puntos de inducción de estructuras sobre el tipo Doc,
+Para todo n, m :: Int positivos. Para todo x :: Doc. indentar n (indentar m x) = indentar (n+m) x 
+entonces queda demostrado que, Para todo x :: Doc. P(x)

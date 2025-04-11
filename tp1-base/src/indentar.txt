@@ -74,6 +74,8 @@ Equiv(idt)   Texto st (foldDoc Texto (\ n' rec -> Linea (n' + (n+m)) rec) Vacio 
 Equiv(Fdoc1) foldDoc Texto (\ n' rec -> Linea (n' + (n+m)) rec) Vacio (Texto st d)
 Equiv(idt)   indentar (n+m) (Texto st d) 
 
+justo como queriamos probar.
+
 3. Ahora nos queda ver el último caso inductivo sobre d :: doc.
 Queremos probar que: Para todo num :: Int. Para todo d :: Doc.(P(d) -> P(Linea num d))
 Es decir
@@ -99,3 +101,5 @@ Equiv(Beta)  (\ n' rec -> Linea (n' + (n+m)) rec) num (foldDoc Texto (\ n' rec -
 Equiv(Fdoc2) foldDoc Texto (\ n' rec -> Linea (n' + (n+m)) rec) Vacio (Linea num d)
 Equiv(idt)   indentar (n+m) (Linea num d) 
 Que es a lo que queríamos llegar
+Habiendo probado los 3 puntos de indicción de estructuras sobre el tipo Doc,
+Para todo n, m :: Int positivos. Para todo x :: Doc. indentar n (indentar m x) = indentar (n+m) xentonces queda demostrado que, Para todo x :: Doc. P(x)

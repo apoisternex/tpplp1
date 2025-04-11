@@ -1,5 +1,7 @@
 Se pide demostrar que:
 Para todo n, m :: Int positivos. Para todo x :: Doc. indentar n (indentar m x) = indentar (n+m) x
+Siendo Para todo d :: doc. Para todo n, m :: Int positivos. P(d) Equivale a indentar n (indentar m d) = indentar (n+m) d
+
 
 considerando:
       indentar :: Int -> Doc -> Doc
@@ -10,6 +12,8 @@ considerando:
 {Fdoc0}  Vacio -> base
 {Fdoc1}  Texto s ds -> fTexto s (foldDoc fTexto fLinea base ds)
 {Fdoc2}  Linea n'' ds -> fLinea n'' (foldDoc fTexto fLinea base ds)
+
+{Beta} la propiedad de aplicar una funcion lambda.
 
 Reescribimos un poco las apariciones de n con ' para no confundir con el n de la demostración.
 
@@ -46,14 +50,16 @@ Equiv(idt) foldDoc Texto (\ n' rec -> Linea (n' + (n+m)) rec) Vacio Vacio
 Equiv(Fdoc0) Vacio 
 Tal y como se queria probar.
 
-Una vez visto el caso base, ahora hay que ver los dos casos recursivos.
+Una vez visto el caso base, ahora hay que ver los dos casos recursivos. 
+Hay dos casos inductivos porque el siguiente documento a calquier documento d y un String st puede ser tanto Texto st d o bien Linea st d.
+
 2. Primer caso inductivo sobre d :: doc.
 Queremos probar que: Para todo st :: String. Para todo d :: Doc.(P(d) -> P(Texto st d))
 Es decir
 Para todo n, m :: Int positivos.(indentar n (indentar m d) = indentar (n+m) d) -> (indentar n (indentar m (Texto st d)) = indentar (n+m) (Texto st d))
 
 HI Equiv indentar n (indentar m d) = indentar (n+m) d
-Nuestra tesis inductiva sera pues indentar n (indentar m (Texto st d)) = indentar (n+m) (Texto st d)
+Nuestra tesis inductiva será indentar n (indentar m (Texto st d)) = indentar (n+m) (Texto st d)
 Vamos por la izquierda:
 
              indentar n (indentar m (Texto st d))
@@ -61,7 +67,7 @@ Equiv(idt)   indentar n (foldDoc Texto (\ n' rec -> Linea (n' + m) rec) Vacio (T
 Equiv(Fdoc1) indentar n ( Texto st (foldDoc Texto (\ n' rec -> Linea (n' + m) rec) Vacio d) )
 Equiv(idt)   indentar n ( Texto st (indentar m d) )
 Equiv(idt)   foldDoc Texto (\ n' rec -> Linea (n' + n) rec) Vacio (Texto st (indentar m d))
-Equiv(Fdoc1) Texto st (foldDoc Texto (\ n' rec -> Linea (n' + m) rec) Vacio (indentar m d)) 
+Equiv(Fdoc1) Texto st (foldDoc Texto (\ n' rec -> Linea (n' + n) rec) Vacio (indentar m d)) 
 Equiv(idt)   Texto st ( indentar n (indentar m d) )
 Equiv(HI)    Texto st (indentar (n+m) d)
 Equiv(idt)   Texto st (foldDoc Texto (\ n' rec -> Linea (n' + (n+m)) rec) Vacio d) 
@@ -69,5 +75,28 @@ Equiv(Fdoc1) foldDoc Texto (\ n' rec -> Linea (n' + (n+m)) rec) Vacio (Texto st 
 Equiv(idt)   indentar (n+m) (Texto st d) 
 justo como queriamos probar. Cuchau
 
+3. Ahora nos queda ver el último caso inductivo sobre d :: doc.
+Queremos probar que: Para todo num :: Int. Para todo d :: Doc.(P(d) -> P(Linea num d))
+Es decir
+Para todo n, m :: Int positivos.(indentar n (indentar m d) = indentar (n+m) d) -> (indentar n (indentar m (Linea num d)) = indentar (n+m) (Linea num d))
 
+HI Equiv indentar n (indentar m d) = indentar (n+m) d
+Nuestra tesis inductiva será indentar n (indentar m (Linea num d)) = indentar (n+m) (Linea num d)
+Vamos por la izquierda:
 
+             indentar n (indentar m (Linea num d))
+Equiv(idt)   indentar n (foldDoc Texto (\ n' rec -> Linea (n' + m) rec) Vacio (Linea num d))
+Equiv(Fdoc2) indentar n ( (\ n' rec -> Linea (n' + m) rec) num (foldDoc Texto (\ n' rec -> Linea (n' + m) rec) Vacio d) )
+Equiv(Beta)  indentar n ( Linea (num + m) (foldDoc Texto (\ n' rec -> Linea (n' + m) rec) Vacio d) )
+Equiv(idt)   indentar n ( Linea (num + m) (indentar m d) )
+Equiv(idt)   foldDoc Texto (\ n' rec -> Linea (n' + n) rec) Vacio (Linea (num + m) (indentar m d))
+Equiv(Fdoc2) (\ n' rec -> Linea (n' + n) rec) (num + m) (foldDoc Texto (\ n' rec -> Linea (n' + n) rec) Vacio (indentar m d))
+Equiv(Beta)  Linea (num + m + n) (foldDoc Texto (\ n' rec -> Linea (n' + n) rec) Vacio (indentar m d))
+Equiv(idt)   Linea (num + m + n) ( indentar n (indentar m d) )
+Equiv(HI)    Linea (num + m + n) (indentar (n+m) d)
+Equiv(idt)   Linea (num + m + n) (foldDoc Texto (\ n' rec -> Linea (n' + (n+m)) rec) Vacio d) 
+
+Equiv(Fdoc2) foldDoc Texto (\ n' rec -> Linea (n' + (n+m)) rec) Vacio (Linea (num + m + n) d)
+Equiv(idt)   indentar (n+m) (Linea (num + m + n) d) 
+
+Eeh... queda distinto. HELP!

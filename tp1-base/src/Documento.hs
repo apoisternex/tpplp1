@@ -60,7 +60,10 @@ recrDoc fTexto fLinea z d = case d of
     'd1 <+> d1' es igual a 'fTexto s rec ds', 'fLinea n rec ds' o d2. 
     Basta entonces con demostrar que cada uno de estos tres posibles valores cumple con los invariantes.
 -}
-
+{- Aclaracion: definimos y utilizamos recrDoc en lugar de FoldDoc porque por la naturaleza del problema,
+es mas conveniente usar recursion primitiva ya que queremos chequear las iteraciones posteriores a la cabeza del doc
+para ver si estamos viendo la ultima linea o no para asi poder mantener el invariante del Doc al concatenar algo que
+termina en texto con algo que comienza en texto.-}
 (<+>) :: Doc -> Doc -> Doc
 (<+>) d1 d2 = 
     recrDoc 

@@ -73,6 +73,7 @@ testsEj6 =
       pponObjetoSimple addams ~?= False,
       -- Tests hechos por nosotros (aunque usan los objetos definidos por la catedra, pero con estos alcanza para ver los casos que faltan)
       pponObjetoSimple familias ~?= False -- ¿toma como objeto complejo a algo que tiene adentro un objeto complejo?
+      pponObjetoSimple (ObjetoPP []) ~?= True
     ]
 
 a, b, c :: Doc

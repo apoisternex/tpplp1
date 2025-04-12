@@ -24,9 +24,9 @@ testsEj2 =
   test
     [ vacio <+> vacio ~?= vacio,
       texto "a" <+> texto "b" ~?= texto "ab",
-      (texto "a" <+> linea) <+> texto "b" ~?= texto "a" <+> (linea <+> texto "b"),
+      (texto "a" <+> linea) <+> texto "b" ~?= texto "a" <+> linea <+> texto "b",
       --Tests hechos por nosotros
-      (texto "a" <+> texto "b") <+> linea ~?= texto "a" <+> (texto "b" <+> linea),
+      (texto "a" <+> texto "b") <+> linea ~?= texto "a" <+> texto "b" <+> linea,
       (texto "a" <+> texto "b") <+> texto "c" ~?= texto "a" <+> texto "b" <+> texto "c",
       texto "a" <+> texto "b" ~?= (<+>) (texto "a") (texto "b"),
       (linea <+> texto "a") <+> texto "b" ~?= linea <+> texto "ab", --concatenar primero una linea
@@ -44,8 +44,10 @@ testsEj3 =
       indentar 2 (texto "a" <+> linea <+> texto "b") ~?= texto "a" <+> indentar 2 (linea <+> texto "b"),
       indentar 2 (linea <+> texto "a") ~?= indentar 1 (indentar 1 (linea <+> texto "a")),
             --Tests hechos por nosotros
-      indentar 0 (linea <+> texto "a") ~?= linea <+> texto "a",
-      indentar 2 (linea <+> indentar 4 linea) ~?= (indentar 2 linea) <+> (indentar 6 linea)
+      indentar 2 (linea <+> linea <+> linea) ~?= indentar 2 linea <+> indentar 2 linea <+> indentar 2 linea, --indentar distributiva
+      indentar 2 (texto "a" <+> indentar 1 linea) ~?= indentar 3 (texto "a" <+> linea), --indentar suma de indentados.
+      indentar 0 (linea <+> texto "a") ~?= linea <+> texto "a", --indentar 0 veces
+      indentar 2 (linea <+> indentar 4 linea) ~?= indentar 2 linea <+> indentar 6 linea --distributiva con casos distinto de 0
     ]
 
 testsEj4 :: Test
@@ -95,9 +97,9 @@ testsEj8 =
     [ mostrar (aplanar (a <+> linea <+> b <+> linea <+> c)) ~?= "a b c",
       -- Tests hechos por nosotros
       mostrar (aplanar vacio) ~?= "",
-      mostrar (aplanar (indentar 5(linea <+> linea))) ~?= "  ",
-      mostrar (aplanar(texto "a" <+> texto "b")) ~?= "ab",
-      mostrar (aplanar (indentar 2(a <+> linea <+> b <+> linea <+> c))) ~?= "a b c"
+      mostrar (aplanar (indentar 5 (linea <+> linea))) ~?= "  ",
+      mostrar (aplanar (texto "a" <+> texto "b")) ~?= "ab",
+      mostrar (aplanar (indentar 2 (a <+> linea <+> b <+> linea <+> c))) ~?= "a b c"
     ]
 objetoMixto :: PPON
 objetoMixto = ObjetoPP [("familias",familias),("saludo",TextoPP "hola"),("clon de Pericles",pericles)]

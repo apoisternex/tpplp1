@@ -56,11 +56,14 @@ recrDoc fTexto fLinea z d = case d of
     Linea n ds -> fLinea n (recrDoc fTexto fLinea z ds) ds 
     Vacio      -> z
 
-{-
-    'd1 <+> d1' es igual a 'fTexto s rec ds', 'fLinea n rec ds' o d2. 
-    Basta entonces con demostrar que cada uno de estos tres posibles valores cumple con los invariantes.
--}
-{- Aclaracion: definimos y utilizamos recrDoc en lugar de FoldDoc porque por la naturaleza del problema,
+{- La funcion <+> es una instancia de 'recrDoc', por lo que su resultado tiene una de las siguientes tres formas:
+     - fTexto s rec ds
+     - fLinea n rec ds
+     - d2 (caso base)
+   donde 'rec' es el resultado de aplicar 'recrDoc' recursivamente sobre el resto del documento.
+Basta entonces con demostrar que cada uno de estos tres posibles valores cumple con los invariantes de Doc.-}
+
+{- Aclaracion: definimos y utilizamos recrDoc en lugar de foldDoc porque por la naturaleza del problema,
 es mas conveniente usar recursion primitiva ya que queremos chequear las iteraciones posteriores a la cabeza del doc
 para ver si estamos viendo la ultima linea o no para asi poder mantener el invariante del Doc al concatenar algo que
 termina en texto con algo que comienza en texto.-}
@@ -69,7 +72,7 @@ termina en texto con algo que comienza en texto.-}
     recrDoc 
         (\s1 rec ds1 -> case (ds1, d2) of
             {-
-                Texto (s1 ++ s2) ds2 cumple los invariantes porque: 
+                'Texto (s1 ++ s2) ds2' cumple los invariantes porque: 
                 (1) s1 y s2 no son vacíos por precondición, por lo tanto, s1 ++ s2 no puede serlo. 
                 (2) No añadimos ningún carácter que no estuviese ya en s1 y s2, por lo que no puede haber saltos de línea en s1 ++ s2.
                 (3) d2 cumple el invariante por precondición, de modo que ds2 debe ser Vacio o Linea i d’.
